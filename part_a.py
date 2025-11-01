@@ -1,5 +1,5 @@
 """
-Part A: Dijkstra Algorithm for Different Parties
+Part A: Dijkstra Algorithm for Different Stakeholders 
 
 This file focuses on implementing Dijkstra's algorithm from company and driver's different perspectives
 
