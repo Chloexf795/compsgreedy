@@ -25,3 +25,13 @@ The Minnesota dataset includes 25 cities with:
 - **7 rural** (low traffic, cheap parking, higher fuel/maintenance costs)
 - **Weather conditions** for safety testing (storm, snow, rain, clear)
 - **32 road connections** representing major Minnesota highways
+
+## Test Files
+- **`test_part_a.py`** - Test for only Part A
+- **`test_part_d.py`** - Test for only Part D
+- **`run_all_test.py`** - Run all the test at the same time
+
+## How to run the test
+```bash
+python3 python3 run_all_tests.py
+```
