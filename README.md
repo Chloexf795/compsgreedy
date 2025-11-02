@@ -29,9 +29,8 @@ The Minnesota dataset includes 25 cities with:
 ## Test Files
 - **`test_part_a.py`** - Test for only Part A
 - **`test_part_d.py`** - Test for only Part D
-- **`run_all_test.py`** - Run all the test at the same time
 
 ## How to run the test
 ```bash
-python3 python3 run_all_tests.py
+python3 python3 test_part_a.py
 ```
