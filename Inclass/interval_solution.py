@@ -26,7 +26,7 @@ def min_pipes(n, ranges):
         return -1
     
     # Step 3: Greedily select intervals
-    watered = 0  # next point we need to cover
+    watered = 0  
     count = 0    # number of pipes used
     i = 0        # current index in intervals
     
@@ -39,14 +39,14 @@ def min_pipes(n, ranges):
             farthest = max(farthest, intervals[i][1])
             i += 1
         
-        # If we couldn't find any interval covering watered, it's impossible
+        # If unable to find any interval covering watered, it's impossible
         if farthest < watered:
             return -1
         
-        # We've covered up to farthest now
+        # Covered up to farthest now
         count += 1
         
-        # If we've covered n, we're done
+        # if covered n, done
         if farthest >= n:
             return count
         

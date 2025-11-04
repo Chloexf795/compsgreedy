@@ -26,7 +26,7 @@ def min_pipes(n, ranges):
         return -1
     
     # Step 3: Greedily select intervals
-    watered = 0  # next point we need to cover
+    watered = 0  
     count = 0    # number of pipes used
     i = 0        # current index in intervals
     
