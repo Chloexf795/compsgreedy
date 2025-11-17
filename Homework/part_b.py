@@ -3,12 +3,13 @@ Part B: Northfield Subsidies!
 
 This file explores what happens when Dijkstra's algorithm encounters negative edge weights.
 
-You should copy and modify dijkstra algorithm from A2.
+You should copy and modify dijkstra algorithm from A2(driver).
 """
 
 import heapq
 from typing import List, Tuple
-from main import Node, Edge, calculate_driver_cost, get_neighbors
+from main import Node, Edge, get_neighbors
+from part_a import calculate_driver_cost
 
 
 # ============================================================================
@@ -28,15 +29,17 @@ def dijkstra_with_northfield_subsidy(start: Node, target: Node, nodes: List[Node
     Returns:
         Tuple[List[Node], float]: (shortest path, total cost)
         
-    TODO: Students implement and observe what happens with negative weights
+    TODO: Implement and observe what happens with negative weights
     """
     # START YOUR IMPLEMENTATION HERE
     
     # Hints:
     # - Copy your dijkstra_driver_route implementation from Part A2 Drivers
-    # - Modify the cost calculation: if from_node.id == "Lakeville" and to_node.id == "Northfield": cost = -100.0
-    # - will be tested with Lonsdale destination to see if algorithm chooses different paths
-    # - Run this and observe the results and finish the reflection.
+    # - The calculate_driver_cost function is imported from part_a (your implementation)
+    # - Modify the cost calculation: if from_node.id == "Lakeville" and to_node.id == "Northfield": cost = -20.0
+    # - Otherwise use normal cost = calculate_driver_cost(from_node, to_node)
+    # - This will be tested with Northfield destination to see if algorithm chooses different paths
+    # - Run this and observe if the subsidy changes the route selection
     
     raise NotImplementedError("Part B (Northfield Subsidy) not yet implemented")
     
@@ -49,61 +52,46 @@ def dijkstra_with_northfield_subsidy(start: Node, target: Node, nodes: List[Node
 
 def run_part_b():
     """
-    Run Part B - Northfield subsidy investigation.
+    Demonstrate the issues with negative weights in Dijkstra's algorithm.
     """
     try:
-        from mn_dataset import MN_NODES_DICT, MN_EDGES, START_CITY
+        from mn_dataset import MN_NODES_DICT, MN_EDGES
+        from part_a import dijkstra_driver_route
         
         print("=" * 80)
-        print("PART B: NORTHFIELD SUBSIDY INVESTIGATION")
+        print("PART B ANALYSIS: Negative Edge Weights Problem")
         
+        # Test: Route from Minneapolis to Northfield (multiple paths available)
+        start_city = MN_NODES_DICT["Minneapolis"]
         northfield = MN_NODES_DICT["Northfield"]
-        lonsdale = MN_NODES_DICT["Lonsdale"]
+        print(f"\nRun routes from {start_city.name} to {northfield.name}")
         
-        print(f"Run route from {START_CITY.name} to {lonsdale.name}")
-        print(f"Subsidy rule: Trip from Lakeville to Northfield costs -$100.00")
-        print("-" * 70)
+        regular_path, regular_cost = dijkstra_driver_route(start_city, northfield, list(MN_NODES_DICT.values()), MN_EDGES)
+        subsidy_path, subsidy_cost = dijkstra_with_northfield_subsidy(start_city, northfield, list(MN_NODES_DICT.values()), MN_EDGES)
         
-        try:
-            # Import driver route from Part A for comparison
-            try:
-                from part_a import dijkstra_driver_route
-            except ImportError:
-                print("Error: Could not import driver route implementation")
-                return
-            
-            # Run regular driver route
-            regular_path, regular_cost = dijkstra_driver_route(START_CITY, lonsdale, list(MN_NODES_DICT.values()), MN_EDGES)
-            print(f"Regular driver route: {' -> '.join([node.name for node in regular_path])}")
-            print(f"Regular driver cost: ${regular_cost:.2f}")
-            
-            # Run subsidized route
-            subsidy_path, subsidy_cost = dijkstra_with_northfield_subsidy(START_CITY, lonsdale, list(MN_NODES_DICT.values()), MN_EDGES)
-            print(f"\nSubsidized route: {' -> '.join([node.name for node in subsidy_path])}")
-            print(f"Subsidized cost: ${subsidy_cost:.2f}")
-          
-            print(f"\nCost difference: ${regular_cost - subsidy_cost:.2f}")     
-        except NotImplementedError:
-            print("Part B not yet implemented")
+        print(f"Regular: {' -> '.join([node.name for node in regular_path])} (${regular_cost:.2f})")
+        print(f"Subsidy: {' -> '.join([node.name for node in subsidy_path])} (${subsidy_cost:.2f})")
 
-            
-    except ImportError:
-        print("Error: Could not import Minnesota dataset")
+    
     except Exception as e:
-        print(f"Error in Part B testing: {e}")
+        print(f"Error in negative weight demonstration: {e}")
 
 
 def main():
     """
-    Main function for Part B.
+    Main function for Part B solution testing.
     """
-    # Load and display dataset info
+    print("Dijkstra Algorithm Assignment - Part B Solution Testing")
+    
+    # Load dataset info
     try:
-        from mn_dataset import MN_NODES_DICT, MN_EDGES, START_CITY
+        from mn_dataset import MN_NODES_DICT, MN_EDGES
+        print(f"Minnesota rideshare network: {len(MN_NODES_DICT)} cities, {len(MN_EDGES)} connections")
     except ImportError:
         print("Error: Could not load Minnesota dataset")
+        return
     
-    # Run tests
+    # Run analysis
     run_part_b()
 
 

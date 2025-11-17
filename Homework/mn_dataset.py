@@ -7,9 +7,12 @@ You shouldn't need to modify this file.
 """
 from main import Node, Edge
 
-# === Minnesota city nodes (with rideshare attributes) ===================================
+# ============================================================================
+# Minnesota City Nodes (with attributes)
+# ============================================================================
+
 MN_NODES = [
-    # Twin Cities Urban Core - High traffic, expensive parking, high platform costs
+    # Twin Cities Urbans - High traffic, expensive parking, high platform costs
     Node("Minneapolis", "Minneapolis", 0.0, 0.0, 
          region="urban", traffic_level=2.0, parking_cost=8.0, 
          maintenance_factor=1.0, platform_cost=4.5, fuel_cost_per_mile=0.18,
@@ -45,18 +48,18 @@ MN_NODES = [
     Node("Blaine", "Blaine", 4.0, 10.0,
          region="suburban", traffic_level=1.1, parking_cost=2.0,
          maintenance_factor=0.9, platform_cost=2.8, fuel_cost_per_mile=0.13,
-         weather_condition="rain"),  # Some rain for weather testing
+         weather_condition="rain"),  
     
     Node("Anoka", "Anoka", -3.0, 9.0,
          region="suburban", traffic_level=1.0, parking_cost=2.0,
          maintenance_factor=1.1, platform_cost=2.5, fuel_cost_per_mile=0.13,
          weather_condition="clear"),
     
-    # Eastern Cities - Mix of suburban and rural
+    # Eastern Cities
     Node("Forest Lake", "Forest Lake", 15.0, 10.0,
          region="rural", traffic_level=0.8, parking_cost=1.5,
          maintenance_factor=1.2, platform_cost=2.2, fuel_cost_per_mile=0.16,
-         weather_condition="snow"),  # Snow for weather testing
+         weather_condition="snow"), 
     
     Node("Stillwater", "Stillwater", 20.0, 3.0,
          region="rural", traffic_level=0.9, parking_cost=2.0,
@@ -85,8 +88,8 @@ MN_NODES = [
          weather_condition="clear"),
     
     Node("Apple Valley", "Apple Valley", 2.0, -13.0,
-         region="suburban", traffic_level=1.2, parking_cost=2.8,
-         maintenance_factor=0.9, platform_cost=2.9, fuel_cost_per_mile=0.14,
+         region="suburban", traffic_level=0.5, parking_cost=0.5, 
+         maintenance_factor=0.8, platform_cost=1.5, fuel_cost_per_mile=0.08, 
          weather_condition="clear"),
     
     Node("Rosemount", "Rosemount", 5.0, -14.0,
@@ -95,8 +98,8 @@ MN_NODES = [
          weather_condition="clear"),
     
     Node("Lakeville", "Lakeville", 1.0, -16.0,
-         region="suburban", traffic_level=1.0, parking_cost=2.0,
-         maintenance_factor=1.1, platform_cost=2.5, fuel_cost_per_mile=0.15,
+         region="suburban", traffic_level=0.3, parking_cost=0.5,  
+         maintenance_factor=0.7, platform_cost=1.5, fuel_cost_per_mile=0.08,  
          weather_condition="clear"),
     
     # Western/Southwest Cities
@@ -124,7 +127,7 @@ MN_NODES = [
     Node("Northfield", "Northfield", 0.0, -20.0,
          region="rural", traffic_level=0.7, parking_cost=1.0,
          maintenance_factor=1.2, platform_cost=1.8, fuel_cost_per_mile=0.17,
-         weather_condition="storm"),  # Storm for weather testing and Part B subsidy
+         weather_condition="storm"),
     
     Node("Lonsdale", "Lonsdale", -5.0, -17.0,
          region="rural", traffic_level=0.6, parking_cost=0.5,
@@ -139,16 +142,15 @@ MN_NODES = [
     Node("Monticello", "Monticello", -15.0, 13.0,
          region="rural", traffic_level=0.7, parking_cost=1.0,
          maintenance_factor=1.3, platform_cost=1.8, fuel_cost_per_mile=0.18,
-         weather_condition="snow"),  # Snow for weather testing
+         weather_condition="snow"), 
 ]
 
-# Create a mapping for easy access by name
+# Mapping so we can access nodes by name
 MN_NODES_DICT = {node.id: node for node in MN_NODES}
 
-# Default starting city (Minneapolis)
-START_CITY = MN_NODES_DICT["Minneapolis"]
-
-# === Minnesota road edges ===================================
+# ============================================================================
+# Minnesota Road Edges
+# ============================================================================
 MN_EDGES = [
     # Major east-west spine (I-94 corridor)
     Edge(MN_NODES_DICT["Monticello"], MN_NODES_DICT["Maple Grove"]),   # Monticello - Maple Grove
@@ -188,17 +190,14 @@ MN_EDGES = [
     Edge(MN_NODES_DICT["Minneapolis"], MN_NODES_DICT["Maple Grove"]),   # Minneapolis - Maple Grove
     Edge(MN_NODES_DICT["Minneapolis"], MN_NODES_DICT["Eagan"]),   # Minneapolis - Eagan
     
-    # Additional connections for reachability
     Edge(MN_NODES_DICT["Woodbury"], MN_NODES_DICT["Cottage Grove"]),   # Woodbury - Cottage Grove
     Edge(MN_NODES_DICT["Cottage Grove"], MN_NODES_DICT["Hastings"]),   # Cottage Grove - Hastings
     Edge(MN_NODES_DICT["Roseville"], MN_NODES_DICT["Blaine"]),   # Roseville - Blaine
     Edge(MN_NODES_DICT["Edina"], MN_NODES_DICT["Chanhassen"]),   # Edina - Chanhassen
-    
-    # Alternative path to Lonsdale (to demonstrate negative edge effects)
+
     Edge(MN_NODES_DICT["Shakopee"], MN_NODES_DICT["New Prague"]),   # Shakopee - New Prague
     Edge(MN_NODES_DICT["New Prague"], MN_NODES_DICT["Lonsdale"]),   # New Prague - Lonsdale
-    
-    # Additional connections for ethical rule testing (multiple path options)
+
     Edge(MN_NODES_DICT["Edina"], MN_NODES_DICT["Minneapolis"]),     # Edina - Minneapolis
     Edge(MN_NODES_DICT["Minneapolis"], MN_NODES_DICT["Anoka"]),     # Minneapolis - Anoka
     Edge(MN_NODES_DICT["Anoka"], MN_NODES_DICT["Forest Lake"]),     # Anoka - Forest Lake
@@ -206,24 +205,29 @@ MN_EDGES = [
     Edge(MN_NODES_DICT["Prior Lake"], MN_NODES_DICT["Burnsville"]), # Prior Lake - Burnsville
     Edge(MN_NODES_DICT["Burnsville"], MN_NODES_DICT["Rosemount"]),  # Burnsville - Rosemount
     
-    # Alternative routes for fatigue testing (more hops = more potential penalties)
     Edge(MN_NODES_DICT["Edina"], MN_NODES_DICT["Bloomington"]),     # Edina - Bloomington
     Edge(MN_NODES_DICT["Bloomington"], MN_NODES_DICT["Eagan"]),     # Bloomington - Eagan
     Edge(MN_NODES_DICT["Eagan"], MN_NODES_DICT["Woodbury"]),        # Eagan - Woodbury
     Edge(MN_NODES_DICT["Woodbury"], MN_NODES_DICT["Forest Lake"]),  # Woodbury - Forest Lake
     
-    # Shorter alternative with many small hops (better for fatigue rule)
+
     Edge(MN_NODES_DICT["Edina"], MN_NODES_DICT["Roseville"]),       # Edina - Roseville
     Edge(MN_NODES_DICT["Roseville"], MN_NODES_DICT["St Paul"]),     # Roseville - St Paul
-    Edge(MN_NODES_DICT["St Paul"], MN_NODES_DICT["Forest Lake"]),   # St Paul - Forest Lake (direct)
+    Edge(MN_NODES_DICT["St Paul"], MN_NODES_DICT["Forest Lake"]),   # St Paul - Forest Lake 
+    
+    Edge(MN_NODES_DICT["Minneapolis"], MN_NODES_DICT["Lakeville"]), # Minneapolis - Lakeville
+    Edge(MN_NODES_DICT["Minneapolis"], MN_NODES_DICT["Apple Valley"]), # Minneapolis - Apple Valley 
+    Edge(MN_NODES_DICT["Apple Valley"], MN_NODES_DICT["Northfield"]), # Apple Valley - Northfield 
+    Edge(MN_NODES_DICT["Roseville"], MN_NODES_DICT["Stillwater"]),   # Roseville - Stillwater
 ]
 
-# Cities with stormy weather for ethical consideration testing
+# ============================================================================
+# Nodes Collection for Student Implementation Feedback
+# ============================================================================
+
 STORMY_CITIES = [node.id for node in MN_NODES if node.weather_condition == "storm"]
 SNOWY_CITIES = [node.id for node in MN_NODES if node.weather_condition == "snow"]
 RAINY_CITIES = [node.id for node in MN_NODES if node.weather_condition == "rain"]
-
-# Rural cities for fairness testing
 RURAL_CITIES = [node.id for node in MN_NODES if node.region == "rural"]
 URBAN_CITIES = [node.id for node in MN_NODES if node.region == "urban"]
 SUBURBAN_CITIES = [node.id for node in MN_NODES if node.region == "suburban"]
