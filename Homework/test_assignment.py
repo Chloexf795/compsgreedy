@@ -743,28 +743,43 @@ class TestPartD:
             pytest.skip("Weather safety not implemented")
         
         from part_d import dijkstra_with_weather_safety
+        try:
+            from part_a import dijkstra_company_route
+        except ImportError:
+            pytest.skip("Company route algorithm unavailable for comparison")
         
         # Routes where storm avoidance matters
         start = graph_data['nodes_dict']['Edina']
         end = graph_data['nodes_dict']['Hastings']
         
-        path, cost = dijkstra_with_weather_safety(
+        weather_path, weather_cost = dijkstra_with_weather_safety(
             start, end, graph_data['nodes_list'], graph_data['edges']
         )
         
-        # Count nodes with bad weather in path
-        storm_count = sum(1 for node in path if node.weather_condition == 'storm')
-        snow_count = sum(1 for node in path if node.weather_condition == 'snow')
+        company_path, company_cost = dijkstra_company_route(
+            start, end, graph_data['nodes_list'], graph_data['edges']
+        )
         
-        # Path should minimize exposure to bad weather
-        # (This is a heuristic - may need adjustment based on graph structure)
-        total_bad_weather = storm_count + snow_count
+        def count_bad_weather_nodes(path):
+            bad_conditions = {'storm', 'snow', 'rain'}
+            return sum(
+                1
+                for node in path
+                if getattr(node, 'weather_condition', None) in bad_conditions
+            )
         
-        # Just verify the path exists and is valid
-        # The cost test above already verifies penalties are applied
-        assert len(path) > 0, \
+        weather_bad = count_bad_weather_nodes(weather_path)
+        company_bad = count_bad_weather_nodes(company_path)
+        
+        assert len(weather_path) > 0, \
             f"❌ Weather safety should still find a valid path\n" \
             f"Hint: Penalties make routes more expensive but shouldn't block them entirely"
+        
+        assert weather_bad <= company_bad, \
+            f"❌ Weather-safe route hits more bad-weather nodes than company route\n" \
+            f"   Weather path bad nodes: {weather_bad}\n" \
+            f"   Company path bad nodes: {company_bad}\n" \
+            f"Hint: Weather-aware routing should reduce exposure to storm/snow/rain nodes"
 
 
 # ============================================================================
