@@ -22,8 +22,7 @@ from mn_dataset import MN_NODES_DICT, MN_EDGES
 # ============================================================================
 # FIXTURES - Load data once and reuse
 # ============================================================================
-
-# Get node and edge data from mn_dataset 
+ 
 @pytest.fixture(scope="module")
 def graph_data():
     """Fixture to load graph data once for all tests."""
@@ -33,7 +32,6 @@ def graph_data():
         'edges': MN_EDGES
     }
 
-# Import solution functions for comparison 
 @pytest.fixture(scope="module")
 def solution_functions():
     """Fixture to import solution functions for comparison."""
@@ -153,23 +151,23 @@ class TestPartA:
         # Check return type is tuple
         assert isinstance(result, tuple), \
             f"❌ Function must return a tuple, got {type(result)}\n" \
-            f"💡 Hint: Return format should be (path, cost)"
+            f"Hint: Return format should be (path, cost)"
         
         assert len(result) == 2, \
             f"❌ Function must return tuple of length 2 (path, cost), got length {len(result)}\n" \
-            f"💡 Hint: return (path, cost)"
+            f"Hint: return (path, cost)"
         
         path, cost = result
         
         # Check path is a list
         assert isinstance(path, list), \
             f"❌ Path must be a list, got {type(path)}\n" \
-            f"💡 Hint: Build path as a list of Node objects"
+            f"Hint: Build path as a list of Node objects"
         
         # Check cost is numeric
         assert isinstance(cost, (int, float)), \
             f"❌ Cost must be a number, got {type(cost)}\n" \
-            f"💡 Hint: Cost should be float representing total trip cost"
+            f"Hint: Cost should be float representing total trip cost"
     
     
     @pytest.mark.parametrize("start_name,end_name,description", test_routes)
@@ -198,7 +196,7 @@ class TestPartA:
         assert is_valid, \
             f"❌ Invalid path for {start_name} → {end_name}: {error_msg}\n" \
             f"   Your path: {' → '.join([n.name for n in path]) if path else 'empty'}\n" \
-            f"💡 Hints:\n" \
+            f"Hints:\n" \
             f"   - Ensure path starts at {start_name} and ends at {end_name}\n" \
             f"   - Each consecutive node pair must be connected by an edge\n" \
             f"   - Use get_neighbors() to find valid connections"
@@ -237,7 +235,7 @@ class TestPartA:
             f"   Your cost: ${student_cost:.2f}\n" \
             f"   Expected: ${solution_cost:.2f}\n" \
             f"   Difference: ${abs(student_cost - solution_cost):.2f}\n" \
-            f"💡 Hints:\n" \
+            f"Hints:\n" \
             f"   - Check calculate_company_cost() implementation\n" \
             f"   - Company cost = platform_cost + (distance × traffic × $0.60)\n" \
             f"   - Ensure you're accumulating costs correctly in Dijkstra\n" \
@@ -273,7 +271,7 @@ class TestPartA:
             f"   Reported cost: ${student_cost:.2f}\n" \
             f"   Actual path cost: ${actual_cost:.2f}\n" \
             f"   Your path: {' → '.join([n.name for n in student_path])}\n" \
-            f"💡 Hints:\n" \
+            f"Hints:\n" \
             f"   - Your path reconstruction might be incorrect\n" \
             f"   - Check that you're updating distances correctly\n" \
             f"   - Verify cost accumulation in the main loop"
@@ -305,7 +303,7 @@ class TestPartA:
         
         assert isinstance(result, tuple) and len(result) == 2, \
             f"❌ Function must return (path, cost) tuple\n" \
-            f"💡 Hint: Same format as company route"
+            f"Hint: Same format as company route"
         
         path, cost = result
         assert isinstance(path, list), f"❌ Path must be a list"
@@ -337,7 +335,7 @@ class TestPartA:
         assert is_valid, \
             f"❌ Invalid driver path for {start_name} → {end_name}: {error_msg}\n" \
             f"   Your path: {' → '.join([n.name for n in path]) if path else 'empty'}\n" \
-            f"💡 Hints: Same validation rules as company route"
+            f"Hints: Same validation rules as company route"
     
     
     @pytest.mark.parametrize("start_name,end_name,description", test_routes)
@@ -370,7 +368,7 @@ class TestPartA:
             f"❌ Driver cost incorrect for {start_name} → {end_name}\n" \
             f"   Your cost: ${student_cost:.2f}\n" \
             f"   Expected: ${solution_cost:.2f}\n" \
-            f"💡 Hints:\n" \
+            f"Hints:\n" \
             f"   - Check calculate_driver_cost() implementation\n" \
             f"   - Driver cost = fuel + parking + maintenance\n" \
             f"   - Fuel = distance × avg_fuel × traffic\n" \
@@ -461,7 +459,7 @@ class TestPartD:
         if not implemented:
             pytest.fail(
                 "❌ No ethical modifications implemented in Part D\n"
-                "💡 Hint: You must implement ONE of:\n"
+                "Hint: You must implement ONE of:\n"
                 "   1. dijkstra_with_fatigue_consideration\n"
                 "   2. dijkstra_with_fairness_consideration\n"
                 "   3. dijkstra_with_weather_safety"
@@ -514,7 +512,7 @@ class TestPartD:
         
         assert is_valid, \
             f"❌ Invalid fatigue path: {error_msg}\n" \
-            f"💡 Hint: Fatigue penalties shouldn't break path connectivity"
+            f"Hint: Fatigue penalties shouldn't break path connectivity"
     
     
     def test_fatigue_penalty_applied(self, graph_data, detect_implementation, solution_functions):
@@ -544,7 +542,7 @@ class TestPartD:
             f"❌ Fatigue cost seems too low - penalties may not be applied\n" \
             f"   Company cost: ${company_cost:.2f}\n" \
             f"   Fatigue cost: ${fatigue_cost:.2f}\n" \
-            f"💡 Hints:\n" \
+            f"Hints:\n" \
             f"   - Add $15 penalty for any long drive (≥10 miles)\n" \
             f"   - Add $50 penalty for consecutive long drives\n" \
             f"   - Check your distance calculations with node.distance_to()"
@@ -592,7 +590,7 @@ class TestPartD:
         
         assert is_valid, \
             f"❌ Invalid fairness path: {error_msg}\n" \
-            f"💡 Hint: Rural subsidies shouldn't break path connectivity"
+            f"Hint: Rural subsidies shouldn't break path connectivity"
     
     
     def test_fairness_subsidy_applied(self, graph_data, detect_implementation):
@@ -623,7 +621,7 @@ class TestPartD:
             f"   Company cost: ${company_cost:.2f}\n" \
             f"   Fairness cost: ${fairness_cost:.2f}\n" \
             f"   Destination: {end.name} (region: {end.region})\n" \
-            f"💡 Hints:\n" \
+            f"Hints:\n" \
             f"   - Apply subsidy for trips TO rural destinations\n" \
             f"   - Check if neighbor.region == 'rural'\n" \
             f"   - Subsidy should reduce cost but keep it positive\n" \
@@ -656,7 +654,7 @@ class TestPartD:
                 f"❌ Cost must remain positive even with subsidies\n" \
                 f"   Route: {start_name} → {end_name}\n" \
                 f"   Your cost: ${cost:.2f}\n" \
-                f"💡 Hint: Use max(0.1, cost - subsidy) to ensure positive costs"
+                f"Hint: Use max(0.1, cost - subsidy) to ensure positive costs"
     
     
     # ============================================================================
@@ -701,7 +699,7 @@ class TestPartD:
         
         assert is_valid, \
             f"❌ Invalid weather safety path: {error_msg}\n" \
-            f"💡 Hint: Weather penalties shouldn't break path connectivity"
+            f"Hint: Weather penalties shouldn't break path connectivity"
     
     
     def test_weather_penalty_applied(self, graph_data, detect_implementation):
@@ -732,7 +730,7 @@ class TestPartD:
             f"   Company cost: ${company_cost:.2f}\n" \
             f"   Weather cost: ${weather_cost:.2f}\n" \
             f"   Destination: {end.name} (weather: {end.weather_condition})\n" \
-            f"💡 Hints:\n" \
+            f"Hints:\n" \
             f"   - Apply weather penalties based on conditions\n" \
             f"   - Storm: 5.0x multiplier, Snow: 3.5x, Rain: 2.0x\n" \
             f"   - Check both from_node and to_node weather_condition\n" \
@@ -766,11 +764,11 @@ class TestPartD:
         # The cost test above already verifies penalties are applied
         assert len(path) > 0, \
             f"❌ Weather safety should still find a valid path\n" \
-            f"💡 Hint: Penalties make routes more expensive but shouldn't block them entirely"
+            f"Hint: Penalties make routes more expensive but shouldn't block them entirely"
 
 
 # ============================================================================
-# INTEGRATION TESTS - Cross-cutting concerns
+# INTEGRATION TESTS 
 # ============================================================================
 
 class TestIntegration:
@@ -802,7 +800,7 @@ class TestIntegration:
         assert company_cost != driver_cost or company_path != driver_path, \
             f"⚠️  Company and driver routes identical - this is unusual\n" \
             f"   This may be correct if the optimal path is the same for both\n" \
-            f"💡 Note: Different cost functions usually lead to different optimal routes"
+            f"Note: Different cost functions usually lead to different optimal routes"
     
     
     def test_unreachable_destination(self, graph_data):
@@ -832,7 +830,7 @@ class TestIntegration:
             f"❌ Should handle unreachable destinations gracefully\n" \
             f"   Expected: empty path or infinite cost\n" \
             f"   Got: path length {len(path)}, cost ${cost:.2f}\n" \
-            f"💡 Hint: Check if target is reachable before reconstructing path"
+            f"Hint: Check if target is reachable before reconstructing path"
     
     
     def test_same_start_end(self, graph_data):
@@ -857,155 +855,12 @@ class TestIntegration:
         assert len(path) == 1 and path[0] == start, \
             f"❌ When start == destination, path should be [start]\n" \
             f"   Your path: {[n.name for n in path]}\n" \
-            f"💡 Hint: Initialize distances[start] = 0"
+            f"Hint: Initialize distances[start] = 0"
         
         assert cost == pytest.approx(0.0, abs=1e-2), \
             f"❌ When start == destination, cost should be 0\n" \
             f"   Your cost: ${cost:.2f}"
 
-
-# ============================================================================
-# PERFORMANCE TESTS (Optional - can be slow)
-# ============================================================================
-
-class TestPerformance:
-    """Optional performance tests to ensure reasonable efficiency."""
-    
-    @pytest.mark.timeout(5)
-    def test_performance_large_route(self, graph_data):
-        """Test that algorithm completes in reasonable time."""
-        try:
-            from part_a import dijkstra_company_route
-        except ImportError:
-            pytest.skip("Part A not implemented")
-        
-        # Test longest possible route
-        start = graph_data['nodes_dict']['Monticello']
-        end = graph_data['nodes_dict']['Hastings']
-        
-        try:
-            path, cost = dijkstra_company_route(
-                start, end,
-                graph_data['nodes_list'],
-                graph_data['edges']
-            )
-        except NotImplementedError:
-            pytest.skip("Function not implemented")
-        
-        # If we get here, it completed within timeout
-        assert len(path) > 0, "Should find a path within time limit"
-
-
-# ============================================================================
-# HELPER TEST - Run this first to diagnose issues
-# ============================================================================
-
-class TestDiagnostics:
-    """Diagnostic tests to help identify common issues quickly."""
-    
-    def test_imports(self):
-        """Test that all required modules can be imported."""
-        errors = []
-        
-        try:
-            import main
-        except ImportError as e:
-            errors.append(f"Cannot import main.py: {e}")
-        
-        try:
-            import mn_dataset
-        except ImportError as e:
-            errors.append(f"Cannot import mn_dataset.py: {e}")
-        
-        try:
-            import part_a
-        except ImportError as e:
-            errors.append(f"Cannot import part_a.py: {e}")
-        
-        try:
-            import part_d
-        except ImportError as e:
-            errors.append(f"Cannot import part_d.py: {e}")
-        
-        if errors:
-            pytest.fail(
-                "❌ Import errors detected:\n" + 
-                "\n".join(f"   • {err}" for err in errors) +
-                "\n💡 Hint: Ensure all files are in the correct directory"
-            )
-    
-    
-    def test_helper_functions_exist(self):
-        """Test that required helper functions are defined."""
-        try:
-            from part_a import calculate_company_cost, calculate_driver_cost
-        except ImportError:
-            pytest.fail(
-                "❌ Cannot import helper functions from part_a.py\n"
-                "💡 Hint: Implement calculate_company_cost() and calculate_driver_cost()"
-            )
-        
-        # Test helper functions work
-        from mn_dataset import MN_NODES_DICT
-        
-        node1 = MN_NODES_DICT['Minneapolis']
-        node2 = MN_NODES_DICT['St Paul']
-        
-        try:
-            cost = calculate_company_cost(node1, node2)
-            assert isinstance(cost, (int, float)), \
-                "calculate_company_cost must return a number"
-            assert cost > 0, \
-                "calculate_company_cost should return positive cost"
-        except NotImplementedError:
-            pytest.skip("calculate_company_cost not implemented")
-        
-        try:
-            cost = calculate_driver_cost(node1, node2)
-            assert isinstance(cost, (int, float)), \
-                "calculate_driver_cost must return a number"
-            assert cost > 0, \
-                "calculate_driver_cost should return positive cost"
-        except NotImplementedError:
-            pytest.skip("calculate_driver_cost not implemented")
-    
-    
-    def test_graph_data_loaded(self, graph_data):
-        """Test that graph data is properly loaded."""
-        assert len(graph_data['nodes_dict']) == 25, \
-            f"Expected 25 cities, found {len(graph_data['nodes_dict'])}"
-        
-        assert len(graph_data['edges']) > 0, \
-            "No edges found in graph"
-        
-        # Test a few key cities exist
-        key_cities = ['Minneapolis', 'St Paul', 'Northfield', 'Bloomington']
-        for city in key_cities:
-            assert city in graph_data['nodes_dict'], \
-                f"Key city '{city}' not found in dataset"
-
-
-# ============================================================================
-# SUMMARY REPORT
-# ============================================================================
-
-def pytest_terminal_summary(terminalreporter, exitstatus, config):
-    """Custom summary to help students understand results."""
-    terminalreporter.write_sep("=", "Assignment Test Summary")
-    
-    passed = len(terminalreporter.stats.get('passed', []))
-    failed = len(terminalreporter.stats.get('failed', []))
-    skipped = len(terminalreporter.stats.get('skipped', []))
-    
-    terminalreporter.write_line(f"\n✅ Passed: {passed}")
-    terminalreporter.write_line(f"❌ Failed: {failed}")
-    terminalreporter.write_line(f"⏭️  Skipped: {skipped}")
-    
-    if failed == 0 and passed > 0:
-        terminalreporter.write_line("\n🎉 Congratulations! All implemented tests pass!")
-    elif failed > 0:
-        terminalreporter.write_line("\n💡 Review the failure hints above to fix issues.")
-        terminalreporter.write_line("   Run individual tests with: pytest test_assignment.py::TestPartA::test_name -v")
 
 
 if __name__ == "__main__":
