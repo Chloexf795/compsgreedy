@@ -27,10 +27,15 @@ The Minnesota dataset includes 25 cities with:
 - **32 road connections** representing major Minnesota highways
 
 ## Test Files
-- **`test_part_a.py`** - Test for only Part A
-- **`test_part_d.py`** - Test for only Part D
+- **`test_assignment.py`** - Test
 
 ## How to run the test
+First you need to install pytest. It would be the best if you create a venv for that. 
+
 ```bash
-python3 python3 test_part_a.py
+python3 -m venv venv_name
+source venv_name/bin/activate
+pip install pytest
 ```
+Second, run
+pytest test_assignment.py -v
