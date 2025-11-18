@@ -12,7 +12,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from typing import List, Tuple
 from main import Node, Edge, get_neighbors
-from part_a_solution import calculate_driver_cost
+from solutions.part_a_solution import calculate_driver_cost
 
 
 # ============================================================================
@@ -24,8 +24,7 @@ def dijkstra_with_northfield_subsidy(start: Node, target: Node, nodes: List[Node
     Complete implementation: Dijkstra with Northfield subsidy (demonstrates negative weight issue).
     
     This implementation shows what happens when we introduce negative edge weights.
-    Trip from Lakeville to Northfield costs -$100, which creates incorrect shortest paths.
-    Normal connectivity is preserved, just Lakeville->Northfield has negative cost.
+    Trip from Lakeville to Northfield costs -$20.00
     """
     # Initialize distances and previous pointers
     distances = {node: float('inf') for node in nodes}
@@ -46,8 +45,10 @@ def dijkstra_with_northfield_subsidy(start: Node, target: Node, nodes: List[Node
             
         visited.add(current_node)
         
-        # Continue exploring (no early termination to find subsidized paths)
-        # This allows us to find cheaper paths with negative weights
+        # Found target - we can stop early (this is Dijkstra's greedy assumption!)
+        # This is WHY Dijkstra fails with negative weights!
+        if current_node == target:
+            break
             
         # Check all neighbors
         neighbors = get_neighbors(current_node, edges)
@@ -55,9 +56,9 @@ def dijkstra_with_northfield_subsidy(start: Node, target: Node, nodes: List[Node
             if neighbor in visited:
                 continue
                 
-            # MODIFICATION: Northfield subsidy
-            if current_node.id == "Lakeville" and neighbor.id == "Northfield":
-                edge_cost = -100.0  # Large negative cost from Lakeville to Northfield!
+            # MODIFICATION: Subsidy - make an edge that's NOT on the direct path negative
+            if current_node.id == "Lonsdale" and neighbor.id == "Northfield":
+                edge_cost = -20.0  # Negative cost from Lonsdale to Northfield
             else:
                 edge_cost = calculate_driver_cost(current_node, neighbor)
                 
@@ -92,30 +93,49 @@ def dijkstra_with_northfield_subsidy(start: Node, target: Node, nodes: List[Node
 
 def run_part_b():
     """
-    Demonstrate the issues with negative weights in Dijkstra's algorithm.
+    Demonstrate Dijkstra's failure: it finds the same path as Part A, missing the cheaper negative-weight path.
     """
+    print("=" * 80)
+    print("PART B ANALYSIS: Negative Edge Weights Problem")
+    print("=" * 80)
     try:
         from mn_dataset import MN_NODES_DICT, MN_EDGES
-        from part_a_solution import dijkstra_driver_route
+        from solutions.part_a_solution import dijkstra_driver_route
         
-        print("=" * 80)
-        print("PART B ANALYSIS: Negative Edge Weights Problem")
-        
-        # Test: Route from Minneapolis to Northfield (multiple paths available)
-        start_city = MN_NODES_DICT["Minneapolis"]
+        start_city = MN_NODES_DICT["Edina"]
         northfield = MN_NODES_DICT["Northfield"]
-        print(f"\nRun routes from {start_city.name} to {northfield.name}")
+        print(f"Route from {start_city.name} to {northfield.name}")
+        print(f"Subsidy rule: Trip from Lonsdale to Northfield costs -$20.00")
+        print()
         
+        # Get the regular path (without subsidy)
         regular_path, regular_cost = dijkstra_driver_route(start_city, northfield, list(MN_NODES_DICT.values()), MN_EDGES)
-        subsidy_path, subsidy_cost = dijkstra_with_northfield_subsidy(start_city, northfield, list(MN_NODES_DICT.values()), MN_EDGES)
+        print(f"Regular (Part A): {' -> '.join([node.name for node in regular_path])} (${regular_cost:.2f})")
         
-        print(f"Regular: {' -> '.join([node.name for node in regular_path])} (${regular_cost:.2f})")
-        print(f"Subsidy: {' -> '.join([node.name for node in subsidy_path])} (${subsidy_cost:.2f})")
-
-    
+        # Get Dijkstra's path with negative edge available (should be SAME as regular!)
+        subsidy_path, subsidy_cost = dijkstra_with_northfield_subsidy(start_city, northfield, list(MN_NODES_DICT.values()), MN_EDGES)
+        print(f"With Negative Edge: {' -> '.join([node.name for node in subsidy_path])} (${subsidy_cost:.2f})")
+        print()
+        
+        # Calculate what the TRUE optimal path should be via Lonsdale
+        lonsdale = MN_NODES_DICT["Lonsdale"]
+        path_to_lonsdale, cost_to_lonsdale = dijkstra_driver_route(start_city, lonsdale, list(MN_NODES_DICT.values()), MN_EDGES)
+        true_optimal_cost = cost_to_lonsdale + (-20.0)
+        
+        print("ANALYSIS:")
+        print("Because we add in the subsidy")
+        print(f"the TRUE cheapest path is: {' -> '.join([node.name for node in path_to_lonsdale])} -> Northfield")
+        print(f"True optimal cost: ${cost_to_lonsdale:.2f} + (-$20.00) = ${true_optimal_cost:.2f}")
+        print()
+        
+        if abs(subsidy_cost - regular_cost) < 0.01:
+            print("DIJKSTRA FAILED!")
+            print(f"• Found the same path as regular Dijkstra (${subsidy_cost:.2f})")
+            print(f"• Missed the cheaper path via Lonsdale (${true_optimal_cost:.2f})")
+            print(f"• Reflect on why that happened!")
+            print()
     except Exception as e:
-        print(f"Error in negative weight demonstration: {e}")
-
+        print(f"Error: {e}")
 
 def main():
     """

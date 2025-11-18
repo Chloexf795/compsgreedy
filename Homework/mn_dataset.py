@@ -214,11 +214,6 @@ MN_EDGES = [
     Edge(MN_NODES_DICT["Edina"], MN_NODES_DICT["Roseville"]),       # Edina - Roseville
     Edge(MN_NODES_DICT["Roseville"], MN_NODES_DICT["St Paul"]),     # Roseville - St Paul
     Edge(MN_NODES_DICT["St Paul"], MN_NODES_DICT["Forest Lake"]),   # St Paul - Forest Lake 
-    
-    Edge(MN_NODES_DICT["Minneapolis"], MN_NODES_DICT["Lakeville"]), # Minneapolis - Lakeville
-    Edge(MN_NODES_DICT["Minneapolis"], MN_NODES_DICT["Apple Valley"]), # Minneapolis - Apple Valley 
-    Edge(MN_NODES_DICT["Apple Valley"], MN_NODES_DICT["Northfield"]), # Apple Valley - Northfield 
-    Edge(MN_NODES_DICT["Roseville"], MN_NODES_DICT["Stillwater"]),   # Roseville - Stillwater
 ]
 
 # ============================================================================
