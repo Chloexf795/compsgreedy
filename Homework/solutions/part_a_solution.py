@@ -16,7 +16,7 @@ from main import Node, Edge, get_neighbors
 
 
 # ============================================================================
-# HELPER FUNCTIONS - Complete Implementations
+# HELPER FUNCTIONS COMPLETE IMPLEMENTATIONS
 # ============================================================================
 
 def calculate_company_cost(from_node: Node, to_node: Node) -> float:
@@ -91,12 +91,13 @@ def dijkstra_company_route(start: Node, target: Node, nodes: List[Node], edges: 
     distances[start] = 0.0
     previous = {node: None for node in nodes}
     
-    # Priority queue: (distance, node)
-    pq = [(0.0, start)]
+    # Priority queue: (distance, counter, node) - counter prevents Node comparison
+    pq = [(0.0, 0, start)]
     visited = set()
+    counter = 1  # For tie-breaking in heapq
     
     while pq:
-        current_dist, current_node = heapq.heappop(pq)
+        current_dist, _, current_node = heapq.heappop(pq)
         
         # Skip if already visited (handles duplicate entries in pq)
         if current_node in visited:
@@ -122,7 +123,8 @@ def dijkstra_company_route(start: Node, target: Node, nodes: List[Node], edges: 
             if new_distance < distances[neighbor]:
                 distances[neighbor] = new_distance
                 previous[neighbor] = current_node
-                heapq.heappush(pq, (new_distance, neighbor))
+                heapq.heappush(pq, (new_distance, counter, neighbor))
+                counter += 1
     
     # Reconstruct path
     path = []
@@ -149,12 +151,13 @@ def dijkstra_driver_route(start: Node, target: Node, nodes: List[Node], edges: L
     distances[start] = 0.0
     previous = {node: None for node in nodes}
     
-    # Priority queue: (distance, node)
-    pq = [(0.0, start)]
+    # Priority queue: (distance, counter, node) - counter prevents Node comparison
+    pq = [(0.0, 0, start)]
     visited = set()
+    counter = 1  # For tie-breaking in heapq
     
     while pq:
-        current_dist, current_node = heapq.heappop(pq)
+        current_dist, _, current_node = heapq.heappop(pq)
         
         # Skip if already visited
         if current_node in visited:
@@ -180,7 +183,8 @@ def dijkstra_driver_route(start: Node, target: Node, nodes: List[Node], edges: L
             if new_distance < distances[neighbor]:
                 distances[neighbor] = new_distance
                 previous[neighbor] = current_node
-                heapq.heappush(pq, (new_distance, neighbor))
+                heapq.heappush(pq, (new_distance, counter, neighbor))
+                counter += 1
     
     # Reconstruct path
     path = []
@@ -197,65 +201,3 @@ def dijkstra_driver_route(start: Node, target: Node, nodes: List[Node], edges: L
     path.reverse()
     return path, distances[target]
 
-
-# ============================================================================
-# RUNNING FUNCTIONS
-# ============================================================================
-
-def run_part_a():
-    """
-    Run Part A implementations with Minnesota data.
-    """
-    try:
-        from mn_dataset import MN_NODES_DICT, MN_EDGES
-        
-        print("=" * 80)
-        print("PART A: COMPANY VS DRIVER ALGORITHM COMPARISON")
-
-        # Run with diverse start/destination pairs
-        test_routes = [
-            ("Edina", "Northfield"),      
-            ("Minneapolis", "Stillwater") 
-        ]
-        
-        for start_name, dest_name in test_routes:
-            if start_name not in MN_NODES_DICT or dest_name not in MN_NODES_DICT:
-                continue
-                
-            start_city = MN_NODES_DICT[start_name]
-            destination = MN_NODES_DICT[dest_name]
-            print(f"\nRoute from {start_city.name} to {destination.name}:")
-            print("-" * 50)
-            
-            # Company algorithm
-            company_path, company_cost = dijkstra_company_route(start_city, destination, list(MN_NODES_DICT.values()), MN_EDGES)
-            print(f"Company algorithm: {' -> '.join([node.name for node in company_path])}")
-            print(f"Company cost: ${company_cost:.2f}")
-            
-            # Driver algorithm
-            driver_path, driver_cost = dijkstra_driver_route(start_city, destination, list(MN_NODES_DICT.values()), MN_EDGES)
-            print(f"Driver algorithm: {' -> '.join([node.name for node in driver_path])}")
-            print(f"Driver cost: ${driver_cost:.2f}")
-                
-    except Exception as e:
-        print(f"Error in Part A testing: {e}")
-
-
-def main():
-    """
-    Main function for Part A testing.
-    """
-    print("Dijkstra Algorithm Assignment - Part A: Basic Algorithm Implementation")
-    
-    # Load dataset
-    try:
-        from mn_dataset import MN_NODES_DICT, MN_EDGES
-    except ImportError:
-        print("Error: Could not load Minnesota dataset")
-    
-    # Run tests
-    run_part_a()
-
-
-if __name__ == "__main__":
-    main()

@@ -9,6 +9,8 @@ You will implement ONE of the modifications:
 - Weather-based safety prioritization
 
 You should copy and modify dijkstra algorithm from A1(company).
+
+You Should Run Part D with combined_run.py
 """
 
 import heapq
@@ -129,92 +131,3 @@ def dijkstra_with_weather_safety(start: Node, target: Node, nodes: List[Node], e
     
     # END YOUR IMPLEMENTATION
 
-
-# ============================================================================
-# RUN FUNCTIONS
-# ============================================================================
-
-def run_part_d():
-    """
-    Run Part D to test ethical algorithm modifications
-    """
-    print("Dijkstra Algorithm Assignment - Part D: Ethical Algorithm Modifications")
-    print("=" * 80)
-    
-    try:
-        from mn_dataset import MN_NODES_DICT, MN_EDGES
-        
-        print("PART D: ETHICAL ALGORITHM MODIFICATIONS")        
-        # run with route Edina to Forest Lake
-        start_city = MN_NODES_DICT["Edina"]
-        destination = MN_NODES_DICT["Forest Lake"]
-        
-        print(f"\nTesting ethical modifications on route: {start_city.name} to {destination.name}")
-        print(f"\n" + "-"*60)
-        
-        # Get baseline for comparison
-        try:
-            # Import company route from Part A for comparison
-            from part_a import dijkstra_company_route
-            
-            baseline_path, baseline_cost = dijkstra_company_route(start_city, destination, list(MN_NODES_DICT.values()), MN_EDGES)
-            print(f"BASELINE (Company Route):")
-            print(f"  Route: {' -> '.join([node.name for node in baseline_path])}")
-            print(f"  Cost: ${baseline_cost:.2f}")
-            
-        except Exception as e:
-            print(f"Error getting baseline: {e}")
-            baseline_path, baseline_cost = [], 0.0
-        
-        # Run Fatigue Consideration
-        print(f"\n" + "-"*60)
-        print(f"FATIGUE CONSIDERATION (Option 1):")
-        try:
-            fatigue_path, fatigue_cost = dijkstra_with_fatigue_consideration(start_city, destination, list(MN_NODES_DICT.values()), MN_EDGES)
-            print(f"MODIFIED Route: {' -> '.join([node.name for node in fatigue_path])}")
-        except NotImplementedError:
-            print(" Fatigue consideration not implemented")
-        except Exception as e:
-            print(f" Error: {e}")
-        
-        # Run Fairness Consideration
-        print(f"\n" + "-"*60)
-        print(f"FAIRNESS CONSIDERATION (Option 2):")
-        try:
-            fairness_path, fairness_cost = dijkstra_with_fairness_consideration(start_city, destination, list(MN_NODES_DICT.values()), MN_EDGES)
-            print(f"MODIFIED Route: {' -> '.join([node.name for node in fairness_path])}")
-            print(f"MODIFIED Cost: ${fairness_cost:.2f}")
-            
-        except NotImplementedError:
-            print("Fairness consideration not implemented")
-        except Exception as e:
-            print(f"Error: {e}")
-        
-        # Run Weather Safety
-        print(f"\n" + "-"*60)
-        print(f"WEATHER SAFETY CONSIDERATION (Option 3):")
-        try:
-            weather_path, weather_cost = dijkstra_with_weather_safety(start_city, destination, list(MN_NODES_DICT.values()), MN_EDGES)
-            print(f"MODIFIED Route: {' -> '.join([node.name for node in weather_path])}")
-            print(f"MODIFIED Cost: ${weather_cost:.2f}")
-         
-        except NotImplementedError:
-            print("Weather safety not implemented")
-        except Exception as e:
-            print(f"Error: {e}")
-            
-    except ImportError:
-        print("Error: Could not import Minnesota dataset")
-    except Exception as e:
-        print(f"Error in Part D testing: {e}")
-
-
-def main():
-    """
-    Main function to run Part D tests
-    """
-    run_part_d()
-
-
-if __name__ == "__main__":
-    main()

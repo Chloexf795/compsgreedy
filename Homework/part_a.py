@@ -6,6 +6,8 @@ This file focuses on implementing Dijkstra's algorithm from company and driver's
 You should implement basic dijkstra algorithms and their helper functions here.
 Start from PART A: DIJKSTRA ALGORITHM FOR DIFFERENT PARTIES,
 Come back to implement HELPER FUNCTIONS if instructed to do so
+
+You Should Run Part A with combined_run.py
 """
 
 import heapq
@@ -108,7 +110,10 @@ def dijkstra_company_route(start: Node, target: Node, nodes: List[Node], edges: 
     # - First implement calculate_company_cost() helper function above!
     # - Use float('inf') for infinity
     # - Use heapq.heappush() and heapq.heappop() for priority queue
-    # - Priority queue stores tuples: (distance, node)
+    # - IMPORTANT: Priority queue stores tuples: (cost, counter, node) 
+    #       * The counter prevents Node comparison errors when cost are equal
+    #       * Initialize counter = 1, increment after each heappush()
+    #       * Use: heapq.heappush(pq, (new_cost, counter, neighbor))
     # - Use get_neighbors(node, edges) to find connected cities (helper function in main)
     # - Use calculate_company_cost(from_node, to_node) for edge weights
     # - Keep track of previous nodes to reconstruct the path
@@ -140,8 +145,9 @@ def dijkstra_driver_route(start: Node, target: Node, nodes: List[Node], edges: L
     
     # Hints:
     # - First implement calculate_driver_cost() helper function above!
-    # - Same Dijkstra algorithm structure
-    # - Use calculate_driver_cost(from_node, to_node) instead
+    # - Same Dijkstra algorithm structure as dijkstra_company_route() above
+    # - Use calculate_driver_cost(from_node, to_node) instead of calculate_company_cost()
+    # - REMEMBER: Use (distance, counter, node) tuples in heapq to prevent Node comparison errors
     
     raise NotImplementedError("Part A2 (Driver Dijkstra) not yet implemented")
     
@@ -149,80 +155,3 @@ def dijkstra_driver_route(start: Node, target: Node, nodes: List[Node], edges: L
 
 
 
-
-# ============================================================================
-# RUN FUNCTIONS
-# ============================================================================
-
-def run_part_a():
-    """
-    Run Part A implementations with Minnesota data.
-    """
-    try:
-        from mn_dataset import MN_NODES_DICT, MN_EDGES
-        
-        print("=" * 80)
-        print("PART A: COMPANY VS DRIVER ALGORITHM COMPARISON")
-
-        # Run with diverse start/destination pairs
-        test_routes = [
-            ("Edina", "Northfield"),      
-            ("Minneapolis", "Stillwater")
-        ]
-        
-        for start_name, dest_name in test_routes:
-            if start_name not in MN_NODES_DICT or dest_name not in MN_NODES_DICT:
-                continue
-                
-            start_city = MN_NODES_DICT[start_name]
-            destination = MN_NODES_DICT[dest_name]
-            print(f"\nRoute from {start_city.name} to {destination.name}:")
-            print("-" * 50)
-            
-            # Run Part A1 - Company
-            try:
-                company_path, company_cost = dijkstra_company_route(start_city, destination, list(MN_NODES_DICT.values()), MN_EDGES)
-                print(f"Company algorithm: {' -> '.join([node.name for node in company_path])}")
-                print(f"Company cost: ${company_cost:.2f}")
-                    
-            except NotImplementedError:
-                print("Company algorithm: Not yet implemented")
-            except Exception as e:
-                print(f"Company algorithm error: {e}")
-            
-            # Run Part A2 - Driver's algorithm  
-            try:
-                driver_path, driver_cost = dijkstra_driver_route(start_city, destination, list(MN_NODES_DICT.values()), MN_EDGES)
-                print(f"Driver algorithm: {' -> '.join([node.name for node in driver_path])}")
-                print(f"Driver cost: ${driver_cost:.2f}")
-                    
-            except NotImplementedError:
-                print("Driver algorithm: Not yet implemented")
-            except Exception as e:
-                print(f"Driver algorithm error: {e}")
-
-                
-    except ImportError:
-        print("Error: Could not import Minnesota dataset")
-    except Exception as e:
-        print(f"Error in Part A testing: {e}")
-
-
-def main():
-    """
-    Main function for Part A testing.
-    """
-    print("Dijkstra Algorithm Assignment - Part A: Basic Algorithm Implementation")
-    
-    # Load dataset
-    try:
-        from mn_dataset import MN_NODES_DICT, MN_EDGES
-    except ImportError:
-        print("Error: Could not load Minnesota dataset")
-    
-    # Run tests
-    run_part_a()
-
-
-if __name__ == "__main__":
-    main()

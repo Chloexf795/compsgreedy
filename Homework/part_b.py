@@ -4,6 +4,8 @@ Part B: Northfield Subsidies!
 This file explores what happens when Dijkstra's algorithm encounters negative edge weights.
 
 You should copy and modify dijkstra algorithm from A2(driver).
+
+You should run Part B by running this file directly
 """
 
 import heapq

@@ -32,12 +32,13 @@ def dijkstra_with_northfield_subsidy(start: Node, target: Node, nodes: List[Node
     distances[start] = 0.0
     previous = {node: None for node in nodes}
     
-    # Priority queue: (distance, node)
-    pq = [(0.0, start)]
+    # Priority queue: (distance, counter, node) - counter prevents Node comparison
+    pq = [(0.0, 0, start)]
     visited = set()
+    counter = 1  # For tie-breaking in heapq
     
     while pq:
-        current_dist, current_node = heapq.heappop(pq)
+        current_dist, _, current_node = heapq.heappop(pq)
         
         # Skip if already visited
         if current_node in visited:
@@ -66,7 +67,8 @@ def dijkstra_with_northfield_subsidy(start: Node, target: Node, nodes: List[Node
             if new_distance < distances[neighbor]:
                 distances[neighbor] = new_distance
                 previous[neighbor] = current_node
-                heapq.heappush(pq, (new_distance, neighbor))
+                heapq.heappush(pq, (new_distance, counter, neighbor))
+                counter += 1
     
     # Reconstruct path
     path = []

@@ -18,7 +18,7 @@ from solutions.part_a_solution import calculate_company_cost
 
 
 # ============================================================================
-# Helper Functions for Part D Ethical Modifications
+# HELPER FUNCTIONS COMPLETE IMPLEMENTATIONS
 # ============================================================================
 
 def apply_rural_subsidy(base_cost: float, destination: Node, subsidy_amount: float = 8.0) -> float:
@@ -157,21 +157,23 @@ def dijkstra_with_fatigue_consideration(start: Node, target: Node, nodes: List[N
 def dijkstra_with_fairness_consideration(start: Node, target: Node, nodes: List[Node], edges: List[Edge]) -> Tuple[List[Node], float]:
     """
     Option 2: Complete Fairness Rule Implementation
-    
-    Applies rural subsidies to ensure equitable transportation access.
-    Uses $8.00 subsidy for rural destinations (minimum cost $0.50).
+    Ethical Rural Subsidy Policy:
+    - Provides subsidies to make rural routes more attractive
+    - Ensures equitable transportation access to underserved areas
+    - Maintains algorithm correctness (no negative weights)
     """
     # Initialize distances and previous pointers
     distances = {node: float('inf') for node in nodes}
     distances[start] = 0.0
     previous = {node: None for node in nodes}
     
-    # Priority queue: (distance, node)
-    pq = [(0.0, start)]
+    # Priority queue: (distance, counter, node) - counter prevents Node comparison
+    pq = [(0.0, 0, start)]
     visited = set()
+    counter = 1  # For tie-breaking in heapq
     
     while pq:
-        current_dist, current_node = heapq.heappop(pq)
+        current_dist, _, current_node = heapq.heappop(pq)
         
         # Skip if already visited
         if current_node in visited:
@@ -192,8 +194,13 @@ def dijkstra_with_fairness_consideration(start: Node, target: Node, nodes: List[
             # Calculate base cost using company perspective
             base_cost = calculate_company_cost(current_node, neighbor)
             
-            # Apply rural subsidy (reduces cost by $8.0 for rural destinations)
-            edge_cost = apply_rural_subsidy(base_cost, neighbor, subsidy_amount=8.0)
+            # Apply fairness modification: reduce costs for rural access
+            if neighbor.region == 'rural':
+                edge_cost = base_cost * 0.3  # Customer pays only 30%
+            elif current_node.region == 'rural':
+                edge_cost = base_cost * 0.5  # Customer pays only 50%
+            else:
+                edge_cost = base_cost
             
             new_distance = current_dist + edge_cost
             
@@ -201,7 +208,8 @@ def dijkstra_with_fairness_consideration(start: Node, target: Node, nodes: List[
             if new_distance < distances[neighbor]:
                 distances[neighbor] = new_distance
                 previous[neighbor] = current_node
-                heapq.heappush(pq, (new_distance, neighbor))
+                heapq.heappush(pq, (new_distance, counter, neighbor))
+                counter += 1
     
     # Reconstruct path
     path = []
@@ -233,12 +241,13 @@ def dijkstra_with_weather_safety(start: Node, target: Node, nodes: List[Node], e
     distances[start] = 0.0
     previous = {node: None for node in nodes}
     
-    # Priority queue: (distance, node)
-    pq = [(0.0, start)]
+    # Priority queue: (distance, counter, node) - counter prevents Node comparison
+    pq = [(0.0, 0, start)]
     visited = set()
+    counter = 1  # For tie-breaking in heapq
     
     while pq:
-        current_dist, current_node = heapq.heappop(pq)
+        current_dist, _, current_node = heapq.heappop(pq)
         
         # Skip if already visited
         if current_node in visited:
@@ -268,7 +277,8 @@ def dijkstra_with_weather_safety(start: Node, target: Node, nodes: List[Node], e
             if new_distance < distances[neighbor]:
                 distances[neighbor] = new_distance
                 previous[neighbor] = current_node
-                heapq.heappush(pq, (new_distance, neighbor))
+                heapq.heappush(pq, (new_distance, counter, neighbor))
+                counter += 1
     
     # Reconstruct path
     path = []
@@ -285,89 +295,3 @@ def dijkstra_with_weather_safety(start: Node, target: Node, nodes: List[Node], e
     path.reverse()
     return path, distances[target]
 
-
-def run_part_d():
-    """
-    Run Part D to test ethical algorithm modifications
-    """
-    print("Dijkstra Algorithm Assignment - Part D: Ethical Algorithm Modifications")
-    print("=" * 80)
-    
-    try:
-        from mn_dataset import MN_NODES_DICT, MN_EDGES
-        
-        print("PART D: ETHICAL ALGORITHM MODIFICATIONS")        
-        # run route for ethical considerations: Edina to Forest Lake
-        start_city = MN_NODES_DICT["Edina"]
-        destination = MN_NODES_DICT["Forest Lake"]
-        
-        print(f"\nTesting ethical modifications on route: {start_city.name} to {destination.name}")
-        print(f"\n" + ""*60)
-        
-        # Get baseline for comparison
-        try:
-            # Import company route from Part A for comparison
-            from solutions.part_a_solution import dijkstra_company_route
-            
-            baseline_path, baseline_cost = dijkstra_company_route(start_city, destination, list(MN_NODES_DICT.values()), MN_EDGES)
-            print(f"BASELINE (Company Route):")
-            print(f"  Route: {' -> '.join([node.name for node in baseline_path])}")
-            print(f"  Cost: ${baseline_cost:.2f}")
-            
-        except Exception as e:
-            print(f"Error getting baseline: {e}")
-            baseline_path, baseline_cost = [], 0.0
-        
-        # Run Fatigue Consideration
-        print(f"\n" + "-"*60)
-        print(f"FATIGUE CONSIDERATION (Option 1):")
-        try:
-            fatigue_path, fatigue_cost = dijkstra_with_fatigue_consideration(start_city, destination, list(MN_NODES_DICT.values()), MN_EDGES)
-            print(f"MODIFIED Route: {' -> '.join([node.name for node in fatigue_path])}")
-            print(f"MODIFIED Cost: ${fatigue_cost:.2f}")
-        except NotImplementedError:
-            print(" Fatigue consideration not implemented")
-        except Exception as e:
-            print(f" Error: {e}")
-        
-        # Run Fairness Consideration
-        print(f"\n" + "-"*60)
-        print(f"FAIRNESS CONSIDERATION (Option 2):")
-        try:
-            fairness_path, fairness_cost = dijkstra_with_fairness_consideration(start_city, destination, list(MN_NODES_DICT.values()), MN_EDGES)
-            print(f"MODIFIED Route: {' -> '.join([node.name for node in fairness_path])}")
-            print(f"MODIFIED Cost: ${fairness_cost:.2f}")
-            
-        except NotImplementedError:
-            print("Fairness consideration not implemented")
-        except Exception as e:
-            print(f"Error: {e}")
-        
-        # Run Weather Safety
-        print(f"\n" + "-"*60)
-        print(f"WEATHER SAFETY CONSIDERATION (Option 3):")
-        try:
-            weather_path, weather_cost = dijkstra_with_weather_safety(start_city, destination, list(MN_NODES_DICT.values()), MN_EDGES)
-            print(f"MODIFIED Route: {' -> '.join([node.name for node in weather_path])}")
-            print(f"MODIFIED Cost: ${weather_cost:.2f}")
-         
-        except NotImplementedError:
-            print("Weather safety not implemented")
-        except Exception as e:
-            print(f"Error: {e}")
-            
-    except ImportError:
-        print("Error: Could not import Minnesota dataset")
-    except Exception as e:
-        print(f"Error in Part D testing: {e}")
-
-
-def main():
-    """
-    Main function to run Part D tests
-    """
-    run_part_d()
-
-
-if __name__ == "__main__":
-    main()
